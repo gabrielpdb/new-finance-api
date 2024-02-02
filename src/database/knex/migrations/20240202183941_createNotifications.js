@@ -7,9 +7,8 @@ exports.up = knex =>
       table.text('title').default('Notificação')
       table.text('description')
       table.timestamp('date')
-      table
-        .timestamp('expiration_date')
-        .defaultTo(knex.raw("(CURRENT_TIMESTAMP + INTERVAL '1 month')"))
+      table.timestamp('expiration_date')
+
       table.boolean('read').default(false)
 
       table
@@ -20,13 +19,21 @@ exports.up = knex =>
 
       table.timestamps(true, true)
     })
+    .then(() =>
+      knex.raw(`
+    CREATE TRIGGER plus_one_month_trigger
+    BEFORE INSERT ON notifications
+    FOR EACH ROW
+    EXECUTE PROCEDURE plus_one_month()
+    `)
+    )
     .then(() => knex.raw(onUpdateTrigger('notifications')))
     .then(() =>
       knex.raw(`
       CREATE TRIGGER delete_expired_notifications_trigger
-      BEFORE INSERT OR UPDATE OR DELETE ON notifications
-      FOR EACH STATEMENT
-      EXECUTE FUNCTION delete_expired_notifications();
+      AFTER INSERT ON notifications
+      FOR EACH ROW
+      EXECUTE PROCEDURE delete_expired_notifications();
     `)
     )
 

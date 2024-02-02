@@ -2,7 +2,7 @@ const ON_MODIFY_NOTIFICATIONS_TABLE_FUNCTION = `
 CREATE OR REPLACE FUNCTION delete_expired_notifications()
 RETURNS TRIGGER AS $$
 BEGIN
-    DELETE FROM notifications WHERE expiration_date IS NOT NULL AND expiration_date <= NOW();
+    DELETE FROM notifications WHERE expiration_date <= NOW();
     RETURN NULL;
 END;
 $$ LANGUAGE plpgsql;
