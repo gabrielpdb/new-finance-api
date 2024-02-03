@@ -79,6 +79,34 @@ const balanceService = {
     await Account.update({ id: account_id, account, user_id })
 
     return
+  },
+
+  async increaseBalance({ account_id, value, user_id }) {
+    const account = await Account.getById({ id: account_id, user_id })
+
+    if (!account) {
+      throw new AppError('Conta não encontrada')
+    }
+
+    account.current_balance = Number(account.current_balance) + value
+
+    await Account.update({ id: account_id, user_id, account })
+
+    return
+  },
+
+  async decreaseBalance({ account_id, value, user_id }) {
+    const account = await Account.getById({ id: account_id, user_id })
+
+    if (!account) {
+      throw new AppError('Conta não encontrada')
+    }
+
+    account.current_balance = Number(account.current_balance) - value
+
+    await Account.update({ id: account_id, user_id, account })
+
+    return
   }
 }
 
