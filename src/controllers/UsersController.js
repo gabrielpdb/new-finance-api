@@ -3,6 +3,46 @@ const AppError = require('../utils/AppError')
 const { User } = require('../models/User')
 
 class UsersController {
+  async index(req, res) {
+    try {
+      const users = await User.getAll()
+
+      if (users.length == 0) {
+        throw new AppError('Nenhum usuário encontrado', 100)
+      }
+
+      return res.json(users)
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message })
+      } else {
+        console.error(error)
+        return res.json(error)
+      }
+    }
+  }
+
+  async show(req, res) {
+    try {
+      const user_id = req.user.id
+
+      const user = await User.getById({ id: user_id })
+
+      if (!user) {
+        throw new AppError('Usuário não encontrado', 404)
+      }
+
+      return res.json(user)
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message })
+      } else {
+        console.error(error)
+        return res.json(error)
+      }
+    }
+  }
+
   async create(req, res) {
     try {
       const { name, email, password } = req.body
@@ -52,7 +92,7 @@ class UsersController {
       const user = await User.getById({ id: user_id })
 
       if (!user) {
-        throw new AppError('Usuário não encontrado')
+        throw new AppError('Usuário não encontrado', 404)
       }
 
       if (!name) {
@@ -89,6 +129,29 @@ class UsersController {
       user.email = email
 
       await User.update({ id: user_id, user })
+
+      return res.json()
+    } catch (error) {
+      if (error instanceof AppError) {
+        return res.status(error.statusCode).json({ message: error.message })
+      } else {
+        console.error(error)
+        return res.json(error)
+      }
+    }
+  }
+
+  async delete(req, res) {
+    try {
+      const { id } = req.params
+
+      const user = await User.getById({ id })
+
+      if (!user) {
+        throw new AppError('Usuário não encontrado', 404)
+      }
+
+      await User.delete({ id })
 
       return res.json()
     } catch (error) {

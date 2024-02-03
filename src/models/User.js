@@ -3,6 +3,16 @@ const knex = require('../database/knex')
 const table = 'users'
 
 const User = {
+  async getAll() {
+    try {
+      const users = await knex(table)
+
+      return users
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
   async getById({ id }) {
     try {
       const user = await knex(table).where({ id }).first()
@@ -36,6 +46,16 @@ const User = {
   async update({ id, user = { name: '', email: '', password: '' } }) {
     try {
       await knex(table).update(user).where({ id })
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
+  async delete({ id }) {
+    try {
+      await knex(table).delete().where({ id })
+
+      return
     } catch (error) {
       console.error(error)
     }
