@@ -91,7 +91,7 @@ const Account = {
     user_id
   }) {
     try {
-      await knex(table).update(account).where({ id })
+      await knex(table).update(account).where({ id, user_id })
 
       return
     } catch (error) {
