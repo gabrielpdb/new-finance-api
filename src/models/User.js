@@ -46,6 +46,8 @@ const User = {
   async update({ id, user = { name: '', email: '', password: '' } }) {
     try {
       await knex(table).update(user).where({ id })
+
+      return
     } catch (error) {
       console.error(error)
     }

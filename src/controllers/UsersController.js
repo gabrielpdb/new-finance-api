@@ -7,7 +7,7 @@ class UsersController {
     try {
       const users = await User.getAll()
 
-      if (users.length == 0) {
+      if (users.lenght == 0) {
         throw new AppError('Nenhum usuário encontrado', 100)
       }
 

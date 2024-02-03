@@ -8,7 +8,7 @@ const usersController = new UsersController()
 
 const usersRoutes = Router()
 
-usersRoutes.get('/', ensureAuthenticated, usersController.index)
+usersRoutes.get('/', ensureAuthenticated, onlyAdmin, usersController.index)
 usersRoutes.get('/info', ensureAuthenticated, usersController.show)
 usersRoutes.post('/', usersController.create)
 usersRoutes.put('/', ensureAuthenticated, usersController.update)
