@@ -6,7 +6,7 @@ class UsersController {
   async index(req, res) {
     const users = await User.getAll()
 
-    if (users.lenght == 0) {
+    if (users.length == 0) {
       throw new AppError('Nenhum usuário encontrado', 100)
     }
 
