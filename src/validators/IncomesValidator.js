@@ -78,7 +78,9 @@ module.exports = {
     const income = await Income.getById({ id, user_id })
 
     if (!income) {
-      throw new AppError('Receita não encontrada', 404)
+      throw new AppError('Receita não encontrada')
+    } else {
+      req.body.income = income
     }
 
     next()

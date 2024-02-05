@@ -65,11 +65,13 @@ class IncomesController {
       income
     } = req.body
 
-    await balanceService.decreaseBalance({
-      account_id: income.account_id,
-      user_id,
-      value: income.value
-    })
+    if (income.is_valid) {
+      await balanceService.decreaseBalance({
+        account_id: income.account_id,
+        user_id,
+        value: income.value
+      })
+    }
 
     const { is_valid } = await Income.update({
       id,
@@ -94,6 +96,15 @@ class IncomesController {
   async delete(req, res) {
     const user_id = req.user.id
     const { id } = req.params
+    const { income } = req.body
+
+    if (income.is_valid) {
+      await balanceService.decreaseBalance({
+        account_id: income.account_id,
+        user_id,
+        value: income.value
+      })
+    }
 
     await Income.delete({ id, user_id })
 
