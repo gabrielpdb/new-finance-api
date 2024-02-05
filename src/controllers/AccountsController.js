@@ -8,7 +8,7 @@ class AccountsController {
 
     const accounts = await Account.getAll({ user_id })
 
-    if (accounts.lenght == 0) {
+    if (accounts.length == 0) {
       throw new AppError('Nenhuma conta encontrada', 100)
     }
 
