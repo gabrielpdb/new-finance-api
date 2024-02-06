@@ -1,4 +1,8 @@
 const { Account } = require('../models/Account')
+const { User } = require('../models/User')
+const { Income } = require('../models/Income')
+const { Expense } = require('../models/Expense')
+const { Transfer } = require('../models/Transfer')
 const { BalanceChange } = require('../models/BalanceChange')
 const { YieldBalanceChange } = require('../models/YieldBalanceChange')
 const AppError = require('../utils/AppError')
@@ -111,6 +115,70 @@ const balanceService = {
     await Account.update({ id: account_id, user_id, account })
 
     return
+  },
+
+  async checkAllAccountsBalance() {
+    let errors = []
+    const users = await User.getAll()
+
+    for (const user of users) {
+      const accounts = await Account.getAll({ user_id: user.id })
+
+      for (const account of accounts) {
+        let balance = Number(account.initial_balance)
+
+        const incomes = await Income.getAllByAccountId({
+          user_id: user.id,
+          account_id: account.id
+        })
+
+        incomes.forEach(transaction => {
+          balance += Number(transaction.value)
+        })
+
+        const expenses = await Expense.getAllByAccountId({
+          user_id: user.id,
+          account_id: account.id
+        })
+
+        expenses.forEach(transaction => {
+          balance -= Number(transaction.value)
+        })
+
+        const income_transfers = await Transfer.getAllByDestinyAccountId({
+          user_id: user.id,
+          account_id: account.id
+        })
+
+        income_transfers.forEach(transaction => {
+          balance += Number(transaction.value)
+        })
+
+        const expense_transfers = await Transfer.getAllByOriginAccountId({
+          user_id: user.id,
+          account_id: account.id
+        })
+
+        expense_transfers.forEach(transaction => {
+          balance -= Number(transaction.value)
+        })
+
+        if (balance != Number(account.current_balance)) {
+          const error = `Erro de saldo na conta ${
+            account.id
+          }. O saldo deveria ser ${balance}, mas é ${Number(
+            account.current_balance
+          )}. Verifique!`
+
+          errors.push({
+            error,
+            difference: balance - Number(account.current_balance)
+          })
+        }
+      }
+    }
+
+    return errors
   }
 }
 

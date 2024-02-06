@@ -23,6 +23,32 @@ const Transfer = {
     }
   },
 
+  async getAllByOriginAccountId({ account_id, user_id }) {
+    try {
+      const transfers = await knex(table).where({
+        origin_account_id: account_id,
+        user_id
+      })
+
+      return transfers
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
+  async getAllByDestinyAccountId({ account_id, user_id }) {
+    try {
+      const transfers = await knex(table).where({
+        destiny_account_id: account_id,
+        user_id
+      })
+
+      return transfers
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
   async insertNew({
     transfer = {
       observation: '',
