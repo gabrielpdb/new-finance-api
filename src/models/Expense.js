@@ -33,6 +33,19 @@ const Expense = {
     }
   },
 
+  async getAllByCategoryId({ category_id, user_id }) {
+    try {
+      const expenses = await knex(table).where({
+        user_id,
+        expense_category_id: category_id
+      })
+
+      return expenses
+    } catch (error) {
+      console.error(error)
+    }
+  },
+
   async insertNew({
     expense = {
       title: '',

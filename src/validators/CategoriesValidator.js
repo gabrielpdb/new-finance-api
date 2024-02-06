@@ -105,6 +105,42 @@ module.exports = {
     next()
   },
 
+  async relocate(req, res, next) {
+    const user_id = req.user.id
+    req.body.type = chooseType(req)
+    const { origin_category_id, destiny_category_id, type } = req.body
+
+    if (!origin_category_id || !destiny_category_id) {
+      throw new AppError('Informe as categorias')
+    }
+
+    const origin_category = await Category.getById({
+      id: origin_category_id,
+      user_id,
+      type
+    })
+
+    if (!origin_category) {
+      throw new AppError('Categoria de origem não encontrada')
+    } else {
+      req.body.origin_category = origin_category
+    }
+
+    const destiny_category = await Category.getById({
+      id: destiny_category_id,
+      user_id,
+      type
+    })
+
+    if (!destiny_category) {
+      throw new AppError('Categoria de destino não encontrada')
+    } else {
+      req.body.destiny_category = destiny_category
+    }
+
+    next()
+  },
+
   async delete(req, res, next) {
     const user_id = req.user.id
     const { id } = req.params

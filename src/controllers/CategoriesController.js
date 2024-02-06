@@ -1,4 +1,5 @@
 const { Category } = require('../models/Category')
+const { Income } = require('../models/Income')
 
 class CategoriesController {
   async index(req, res) {
@@ -51,6 +52,44 @@ class CategoriesController {
       user_id,
       category: { color, title }
     })
+
+    return res.json()
+  }
+
+  async relocate(req, res) {
+    const user_id = req.user.id
+    const { origin_category, destiny_category, type } = req.body
+    let transactions
+
+    if (type == 'income') {
+      transactions = await Income.getAllByCategoryId({
+        category_id: origin_category.id,
+        user_id
+      })
+
+      transactions.forEach(async transaction => {
+        transaction.income_category_id = destiny_category.id
+        await Income.update({
+          id: transaction.id,
+          user_id,
+          income: transaction
+        })
+      })
+    } else if (type == 'expense') {
+      transactions = await Expense.getAllByCategoryId({
+        category_id: origin_category.id,
+        user_id
+      })
+
+      transactions.forEach(async transaction => {
+        transaction.expense_category_id = destiny_category.id
+        await Expense.update({
+          id: transaction.id,
+          user_id,
+          expense: transaction
+        })
+      })
+    }
 
     return res.json()
   }
