@@ -14,6 +14,7 @@ const balanceService = {
   },
 
   async changeBalance({ account_id, new_balance, user_id }) {
+    new_balance = Number(new_balance)
     const account = await Account.getById({ id: account_id, user_id })
 
     if (!account) {
@@ -38,6 +39,7 @@ const balanceService = {
   },
 
   async yieldChangeBalance({ account_id, new_balance, user_id }) {
+    new_balance = Number(new_balance)
     const account = await Account.getById({ id: account_id, user_id })
 
     if (!account) {
@@ -82,6 +84,7 @@ const balanceService = {
   },
 
   async increaseBalance({ account_id, value, user_id }) {
+    value = Number(value)
     const account = await Account.getById({ id: account_id, user_id })
 
     if (!account) {
@@ -96,6 +99,7 @@ const balanceService = {
   },
 
   async decreaseBalance({ account_id, value, user_id }) {
+    value = Number(value)
     const account = await Account.getById({ id: account_id, user_id })
 
     if (!account) {
