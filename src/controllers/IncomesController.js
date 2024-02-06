@@ -9,7 +9,7 @@ class IncomesController {
     const incomes = await Income.getAll({ user_id })
 
     if (incomes.length == 0) {
-      throw new AppError('Nenhuma receita encontrada', 100)
+      throw new AppError('Nenhuma receita encontrada', 404)
     }
 
     return res.json(incomes)

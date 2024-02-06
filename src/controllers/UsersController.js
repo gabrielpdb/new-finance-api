@@ -7,7 +7,7 @@ class UsersController {
     const users = await User.getAll()
 
     if (users.length == 0) {
-      throw new AppError('Nenhum usuário encontrado', 100)
+      throw new AppError('Nenhum usuário encontrado', 404)
     }
 
     return res.json(users)

@@ -8,7 +8,7 @@ class CategoriesController {
     const categories = await Category.getAll({ user_id, type })
 
     if (categories.length == 0) {
-      throw new AppError('Nenhuma categoria encontrada', 100)
+      throw new AppError('Nenhuma categoria encontrada', 404)
     }
 
     return res.json(categories)
